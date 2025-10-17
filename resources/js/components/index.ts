@@ -3,6 +3,7 @@ export {AjaxDeleteRow} from './ajax-delete-row';
 export {AjaxForm} from './ajax-form';
 export {Attachments} from './attachments';
 export {AttachmentsList} from './attachments-list';
+export {AttachmentPreviewer} from './attachment-previewer';
 export {AutoSuggest} from './auto-suggest';
 export {AutoSubmit} from './auto-submit';
 export {BackToTop} from './back-to-top';

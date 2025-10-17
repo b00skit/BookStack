@@ -158,6 +158,7 @@ Route::middleware('auth')->group(function () {
 
     // Attachments routes
     Route::get('/attachments/{id}', [UploadControllers\AttachmentController::class, 'get']);
+    Route::get('/attachments/{id}/preview', [UploadControllers\AttachmentController::class, 'preview']);
     Route::post('/attachments/upload', [UploadControllers\AttachmentController::class, 'upload']);
     Route::post('/attachments/upload/{id}', [UploadControllers\AttachmentController::class, 'uploadUpdate']);
     Route::post('/attachments/link', [UploadControllers\AttachmentController::class, 'attachLink']);

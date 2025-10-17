@@ -97,6 +97,14 @@ class Attachment extends Model implements OwnableInterface
      */
     public function hasPreviewContent(): bool
     {
+        return $this->isPreviewableFile() && strtolower($this->extension) === 'pdf';
+    }
+
+    /**
+     * Determine if this attachment can be previewed via the page file preview interface.
+     */
+    public function isPreviewableFile(): bool
+    {
         if ($this->external) {
             return false;
         }
@@ -104,6 +112,30 @@ class Attachment extends Model implements OwnableInterface
         $previewExtensions = ['pdf', 'doc', 'docx', 'xls', 'xlsx'];
 
         return in_array(strtolower($this->extension), $previewExtensions);
+    }
+
+    /**
+     * Determine the preview mode used for the file preview interface.
+     */
+    public function getPreviewDisplayType(): string
+    {
+        return match (strtolower($this->extension)) {
+            'doc', 'docx' => 'document',
+            'xls', 'xlsx' => 'spreadsheet',
+            default => 'pdf',
+        };
+    }
+
+    /**
+     * Get the URL used for file previews.
+     */
+    public function getPreviewDisplayUrl(): string
+    {
+        if ($this->getPreviewDisplayType() === 'pdf') {
+            return $this->getUrl(true);
+        }
+
+        return url('/attachments/' . $this->id . '/preview');
     }
 
     /**
