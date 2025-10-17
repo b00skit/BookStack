@@ -101,9 +101,7 @@ class Attachment extends Model implements OwnableInterface
             return false;
         }
 
-        $previewExtensions = ['pdf', 'doc', 'docx', 'xls', 'xlsx'];
-
-        return in_array(strtolower($this->extension), $previewExtensions);
+        return strtolower($this->extension) === 'pdf';
     }
 
     /**
@@ -116,6 +114,49 @@ class Attachment extends Model implements OwnableInterface
             . '</div>';
 
         return ['text/html' => $html, 'text/plain' => $html];
+    }
+
+    /**
+     * Get metadata describing the preview capabilities of this attachment when shown on a page.
+     *
+     * @return array{available: bool, frameUrl: string|null, type: string|null}
+     */
+    public function pagePreviewData(): array
+    {
+        if ($this->external) {
+            return ['available' => false, 'frameUrl' => null, 'type' => null];
+        }
+
+        $extension = strtolower($this->extension);
+
+        if ($extension === 'pdf') {
+            return ['available' => true, 'frameUrl' => $this->getUrl(true), 'type' => 'pdf'];
+        }
+
+        if (in_array($extension, ['doc', 'docx', 'xls', 'xlsx'])) {
+            $sourceUrl = $this->getUrl();
+            $frameUrl = 'https://view.officeapps.live.com/op/embed.aspx?src=' . rawurlencode($sourceUrl);
+
+            return ['available' => true, 'frameUrl' => $frameUrl, 'type' => 'office'];
+        }
+
+        return ['available' => false, 'frameUrl' => null, 'type' => null];
+    }
+
+    /**
+     * Determine if this attachment can be previewed directly on a page view.
+     */
+    public function supportsPagePreview(): bool
+    {
+        return $this->pagePreviewData()['available'];
+    }
+
+    /**
+     * Get the frame URL used when rendering page previews for this attachment.
+     */
+    public function pagePreviewFrameUrl(): ?string
+    {
+        return $this->pagePreviewData()['frameUrl'];
     }
 
     /**

@@ -25,6 +25,7 @@ export {EntitySelector} from './entity-selector';
 export {EntitySelectorPopup} from './entity-selector-popup';
 export {EventEmitSelect} from './event-emit-select';
 export {ExpandToggle} from './expand-toggle';
+export {FilePreviews} from './file-previews';
 export {GlobalSearch} from './global-search';
 export {HeaderMobileToggle} from './header-mobile-toggle';
 export {ImageManager} from './image-manager';

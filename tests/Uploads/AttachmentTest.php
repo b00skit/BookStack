@@ -501,4 +501,58 @@ class AttachmentTest extends TestCase
         ]);
         $this->assertFalse($externalAttachment->hasPreviewContent());
     }
+
+    public function test_page_preview_data_handles_supported_types()
+    {
+        $pdfAttachment = Attachment::factory()->make([
+            'extension' => 'pdf',
+            'external' => false,
+            'name' => 'Preview.pdf',
+        ]);
+        $pdfAttachment->id = 100;
+
+        $pdfPreviewData = $pdfAttachment->pagePreviewData();
+        $this->assertTrue($pdfPreviewData['available']);
+        $this->assertSame($pdfAttachment->getUrl(true), $pdfPreviewData['frameUrl']);
+        $this->assertSame('pdf', $pdfPreviewData['type']);
+
+        $docAttachment = Attachment::factory()->make([
+            'extension' => 'docx',
+            'external' => false,
+            'name' => 'Document.docx',
+        ]);
+        $docAttachment->id = 101;
+
+        $docPreviewData = $docAttachment->pagePreviewData();
+        $this->assertTrue($docPreviewData['available']);
+        $this->assertSame('office', $docPreviewData['type']);
+        $this->assertNotNull($docPreviewData['frameUrl']);
+        $this->assertStringContainsString(
+            rawurlencode($docAttachment->getUrl()),
+            $docPreviewData['frameUrl']
+        );
+
+        $excelAttachment = Attachment::factory()->make([
+            'extension' => 'xlsx',
+            'external' => false,
+            'name' => 'Sheet.xlsx',
+        ]);
+        $excelAttachment->id = 102;
+
+        $excelPreviewData = $excelAttachment->pagePreviewData();
+        $this->assertTrue($excelPreviewData['available']);
+        $this->assertSame('office', $excelPreviewData['type']);
+
+        $unsupportedAttachment = Attachment::factory()->make([
+            'extension' => 'zip',
+            'external' => false,
+        ]);
+        $this->assertFalse($unsupportedAttachment->pagePreviewData()['available']);
+
+        $externalPdf = Attachment::factory()->make([
+            'extension' => 'pdf',
+            'external' => true,
+        ]);
+        $this->assertFalse($externalPdf->pagePreviewData()['available']);
+    }
 }

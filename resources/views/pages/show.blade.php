@@ -47,7 +47,35 @@
         <div id="page-attachments" class="mb-l">
             <h5>{{ trans('entities.pages_attachments') }}</h5>
             <div class="body">
-                @include('attachments.list', ['attachments' => $page->attachments])
+                <div component="tabs" class="tab-container">
+                    <div class="nav-tabs" role="tablist">
+                        <button id="page-attachments-tab-list"
+                                role="tab"
+                                aria-selected="true"
+                                aria-controls="page-attachments-panel-list">
+                            {{ trans('entities.attachments_tab_list') }}
+                        </button>
+                        <button id="page-attachments-tab-previews"
+                                role="tab"
+                                aria-selected="false"
+                                aria-controls="page-attachments-panel-previews">
+                            {{ trans('entities.attachments_tab_previews') }}
+                        </button>
+                    </div>
+                    <div id="page-attachments-panel-list"
+                         role="tabpanel"
+                         tabindex="0"
+                         aria-labelledby="page-attachments-tab-list">
+                        @include('attachments.list', ['attachments' => $page->attachments])
+                    </div>
+                    <div id="page-attachments-panel-previews"
+                         role="tabpanel"
+                         tabindex="0"
+                         aria-labelledby="page-attachments-tab-previews"
+                         hidden>
+                        @include('attachments.previews', ['attachments' => $page->attachments])
+                    </div>
+                </div>
             </div>
         </div>
     @endif
