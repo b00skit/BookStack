@@ -93,6 +93,30 @@ class Attachment extends Model implements OwnableInterface
     }
 
     /**
+     * Determine if this attachment can provide preview content for editor insertion.
+     */
+    public function hasPreviewContent(): bool
+    {
+        if ($this->external) {
+            return false;
+        }
+
+        return strtolower($this->extension) === 'pdf2';
+    }
+
+    /**
+     * Get preview-friendly content for insertion into the editors.
+     */
+    public function editorPreviewContent(): array
+    {
+        $html = '<div class="attachment-preview">'
+            . '<iframe class="attachment-preview-frame" src="' . e($this->getUrl(true)) . '" title="' . e($this->name) . '" loading="lazy"></iframe>'
+            . '</div>';
+
+        return ['text/html' => $html, 'text/plain' => $html];
+    }
+
+    /**
      * Generate the HTML link to this attachment.
      */
     public function htmlLink(): string
