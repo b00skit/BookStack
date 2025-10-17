@@ -2,6 +2,7 @@ export {AddRemoveRows} from './add-remove-rows';
 export {AjaxDeleteRow} from './ajax-delete-row';
 export {AjaxForm} from './ajax-form';
 export {Attachments} from './attachments';
+export {AttachmentPreviews} from './attachment-previews';
 export {AttachmentsList} from './attachments-list';
 export {AutoSuggest} from './auto-suggest';
 export {AutoSubmit} from './auto-submit';
