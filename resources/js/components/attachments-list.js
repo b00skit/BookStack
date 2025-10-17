@@ -9,7 +9,8 @@ export class AttachmentsList extends Component {
 
     setup() {
         this.container = this.$el;
-        this.fileLinks = this.$manyRefs.linkTypeFile;
+        this.fileLinks = this.$manyRefs.linkTypeFile || [];
+        this.previewButtons = this.$manyRefs.previewButton || [];
 
         this.setupListeners();
     }
@@ -26,6 +27,20 @@ export class AttachmentsList extends Component {
                 this.removeOpenQueryFromLinks();
             }
         }, {passive: true});
+
+        for (const button of this.previewButtons) {
+            button.addEventListener('click', event => {
+                event.preventDefault();
+                const attachmentId = button.dataset.attachmentId;
+                if (!attachmentId) {
+                    return;
+                }
+
+                if (window.$events) {
+                    window.$events.emit('attachment-preview:open', {id: attachmentId});
+                }
+            });
+        }
     }
 
     addOpenQueryToLinks() {

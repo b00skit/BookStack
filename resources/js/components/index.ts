@@ -38,6 +38,7 @@ export {OptionalInput} from './optional-input';
 export {PageComment} from './page-comment';
 export {PageCommentReference} from './page-comment-reference';
 export {PageComments} from './page-comments';
+export {PageAttachmentPreview} from './page-attachment-preview';
 export {PageDisplay} from './page-display';
 export {PageEditor} from './page-editor';
 export {PagePicker} from './page-picker';
