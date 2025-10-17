@@ -20,6 +20,14 @@
                                 @icon('export')
                                 <div>{{ trans('common.open_in_tab') }}</div>
                             </a>
+                            <button type="button"
+                                    class="icon-item"
+                                    role="menuitem"
+                                    refs="attachments-list@preview-button"
+                                    data-attachment-id="{{ $attachment->id }}">
+                                @icon('open-book')
+                                <div>{{ trans('entities.attachments_preview') }}</div>
+                            </button>
                         </ul>
                     </div>
                 @endif

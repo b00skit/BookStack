@@ -17,12 +17,47 @@
     </div>
 
     <main class="content-wrap card">
-        <div component="page-display"
-             option:page-display:page-id="{{ $page->id }}"
-             class="page-content clearfix">
-            @include('pages.parts.page-display')
+        <div component="page-attachment-preview" class="page-attachment-preview-wrapper">
+            <div refs="page-attachment-preview@content" class="page-attachment-preview-content">
+                <div component="page-display"
+                     option:page-display:page-id="{{ $page->id }}"
+                     class="page-content clearfix">
+                    @include('pages.parts.page-display')
+                </div>
+                @include('pages.parts.pointer', ['page' => $page])
+            </div>
+            <div refs="page-attachment-preview@preview" class="page-attachment-preview card content" hidden>
+                <div class="page-attachment-preview-controls">
+                    <div class="page-attachment-preview-selector">
+                        <label for="page-attachment-preview-select">{{ trans('entities.attachments_preview_select') }}</label>
+                        <select id="page-attachment-preview-select" refs="page-attachment-preview@select">
+                            @foreach($page->attachments->where('external', false) as $attachment)
+                                <option value="{{ $attachment->id }}"
+                                        data-inline-url="{{ $attachment->getUrl(true) }}"
+                                        data-download-url="{{ $attachment->getUrl(false) }}"
+                                        data-extension="{{ strtolower($attachment->extension ?? '') }}"
+                                        data-name="{{ $attachment->name }}">
+                                    {{ $attachment->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <button type="button" class="button outline" refs="page-attachment-preview@close">
+                        @icon('close')
+                        <span>{{ trans('entities.attachments_preview_close') }}</span>
+                    </button>
+                </div>
+                <h3 refs="page-attachment-preview@title" class="page-attachment-preview-title" hidden></h3>
+                <div class="page-attachment-preview-body">
+                    <iframe refs="page-attachment-preview@frame"
+                            class="attachment-preview-frame page-attachment-preview-frame"
+                            title="{{ trans('entities.attachments_preview_title') }}"
+                            loading="lazy"
+                            hidden></iframe>
+                    <div refs="page-attachment-preview@message" class="page-attachment-preview-message" hidden></div>
+                </div>
+            </div>
         </div>
-        @include('pages.parts.pointer', ['page' => $page])
     </main>
 
     @include('entities.sibling-navigation', ['next' => $next, 'previous' => $previous])
