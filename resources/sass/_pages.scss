@@ -451,6 +451,59 @@ body.tox-fullscreen, body.markdown-fullscreen {
   padding-bottom: 45px;
 }
 
+.attachment-preview-toolbox {
+  display: flex;
+  gap: vars.$l;
+  align-items: stretch;
+  min-height: 360px;
+
+  @include mixins.smaller-than(vars.$bp-m) {
+    flex-direction: column;
+  }
+
+  .attachment-preview-list {
+    display: flex;
+    flex-direction: column;
+    gap: vars.$xs;
+    flex: 0 0 220px;
+    @include mixins.smaller-than(vars.$bp-m) {
+      flex: 1 1 auto;
+    }
+  }
+
+  .attachment-preview-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: vars.$s;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+    @include mixins.lightDark(background-color, #f8f8f8, #2f2f2f);
+    @include mixins.lightDark(color, #222, #EEE);
+
+    &:hover,
+    &.active {
+      border-color: var(--color-link);
+      color: var(--color-link);
+    }
+  }
+
+  .attachment-preview-name {
+    flex: 1;
+    padding-inline-end: vars.$xs;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .attachment-preview-display {
+    flex: 1;
+  }
+}
+
 .suggestion-box {
   top: auto;
   margin: -4px 0 0;

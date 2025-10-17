@@ -501,4 +501,63 @@ class AttachmentTest extends TestCase
         ]);
         $this->assertFalse($externalAttachment->hasPreviewContent());
     }
+
+    public function test_supports_full_preview()
+    {
+        $pdfAttachment = Attachment::factory()->make([
+            'extension' => 'pdf',
+            'external' => false,
+        ]);
+        $this->assertTrue($pdfAttachment->supportsFullPreview());
+
+        $docAttachment = Attachment::factory()->make([
+            'extension' => 'docx',
+            'external' => false,
+        ]);
+        $this->assertTrue($docAttachment->supportsFullPreview());
+
+        $textAttachment = Attachment::factory()->make([
+            'extension' => 'txt',
+            'external' => false,
+        ]);
+        $this->assertFalse($textAttachment->supportsFullPreview());
+
+        $externalAttachment = Attachment::factory()->make([
+            'extension' => 'pdf',
+            'external' => true,
+        ]);
+        $this->assertFalse($externalAttachment->supportsFullPreview());
+    }
+
+    public function test_full_preview_data_generation()
+    {
+        $pdfAttachment = Attachment::factory()->make([
+            'extension' => 'pdf',
+            'external' => false,
+            'name' => 'Preview.pdf',
+        ]);
+        $pdfAttachment->id = 42;
+
+        $pdfData = $pdfAttachment->fullPreviewData();
+
+        $this->assertNotNull($pdfData);
+        $this->assertSame('pdf', $pdfData['type']);
+        $this->assertSame('Preview.pdf', $pdfData['title']);
+        $this->assertStringContainsString('/attachments/42?open=true', $pdfData['src']);
+
+        $docAttachment = Attachment::factory()->make([
+            'extension' => 'docx',
+            'external' => false,
+            'name' => 'Document.docx',
+        ]);
+        $docAttachment->id = 51;
+
+        $docData = $docAttachment->fullPreviewData();
+
+        $this->assertNotNull($docData);
+        $this->assertSame('office', $docData['type']);
+        $this->assertSame('Document.docx', $docData['title']);
+        $this->assertStringContainsString('https://view.officeapps.live.com/op/embed.aspx?src=', $docData['src']);
+        $this->assertStringContainsString('%2Fattachments%2F51', $docData['src']);
+    }
 }

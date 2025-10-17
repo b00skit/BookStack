@@ -101,9 +101,7 @@ class Attachment extends Model implements OwnableInterface
             return false;
         }
 
-        $previewExtensions = ['pdf', 'doc', 'docx', 'xls', 'xlsx'];
-
-        return in_array(strtolower($this->extension), $previewExtensions);
+        return strtolower($this->extension) === 'pdf';
     }
 
     /**
@@ -116,6 +114,54 @@ class Attachment extends Model implements OwnableInterface
             . '</div>';
 
         return ['text/html' => $html, 'text/plain' => $html];
+    }
+
+    /**
+     * Determine if the attachment can be rendered in the full preview toolbox.
+     */
+    public function supportsFullPreview(): bool
+    {
+        if ($this->external) {
+            return false;
+        }
+
+        $previewExtensions = ['pdf', 'doc', 'docx', 'xls', 'xlsx'];
+
+        return in_array(strtolower($this->extension), $previewExtensions);
+    }
+
+    /**
+     * Get data required to render a preview of this attachment within the toolbox preview tab.
+     */
+    public function fullPreviewData(): ?array
+    {
+        if (!$this->supportsFullPreview()) {
+            return null;
+        }
+
+        $extension = strtolower($this->extension);
+        $title = $this->name;
+
+        if ($extension === 'pdf') {
+            return [
+                'type'  => 'pdf',
+                'src'   => $this->getUrl(true),
+                'title' => $title,
+            ];
+        }
+
+        if (in_array($extension, ['doc', 'docx', 'xls', 'xlsx'])) {
+            $fileUrl = $this->getUrl();
+            $encodedUrl = rawurlencode($fileUrl);
+
+            return [
+                'type'  => 'office',
+                'src'   => 'https://view.officeapps.live.com/op/embed.aspx?src=' . $encodedUrl,
+                'title' => $title,
+            ];
+        }
+
+        return null;
     }
 
     /**

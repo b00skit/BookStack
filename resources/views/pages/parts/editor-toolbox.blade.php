@@ -6,6 +6,7 @@
             <button type="button" refs="editor-toolbox@tab-button" data-tab="tags" title="{{ trans('entities.page_tags') }}" class="active">@icon('tag')</button>
             @if(userCan(\BookStack\Permissions\Permission::AttachmentCreateAll))
                 <button type="button" refs="editor-toolbox@tab-button" data-tab="files" title="{{ trans('entities.attachments') }}">@icon('attach')</button>
+                <button type="button" refs="editor-toolbox@tab-button" data-tab="file-previews" title="{{ trans('entities.attachments_previews') }}">@icon('file')</button>
             @endif
             <button type="button" refs="editor-toolbox@tab-button" data-tab="templates" title="{{ trans('entities.templates') }}">@icon('template')</button>
             @if($comments->enabled())
@@ -23,6 +24,7 @@
 
     @if(userCan(\BookStack\Permissions\Permission::AttachmentCreateAll))
         @include('attachments.manager', ['page' => $page])
+        @include('attachments.manager-previews', ['page' => $page])
     @endif
 
     <div refs="editor-toolbox@tab-content" data-tab-content="templates" class="toolbox-tab-content">
