@@ -501,4 +501,45 @@ class AttachmentTest extends TestCase
         ]);
         $this->assertFalse($externalAttachment->hasPreviewContent());
     }
+
+    public function test_preview_frame_data_for_supported_types()
+    {
+        $pdfAttachment = Attachment::factory()->make([
+            'extension' => 'pdf',
+            'external' => false,
+        ]);
+        $pdfAttachment->id = 7;
+
+        $pdfData = $pdfAttachment->getPreviewFrameData();
+        $this->assertNotNull($pdfData);
+        $this->assertSame('pdf', $pdfData['type']);
+        $this->assertStringContainsString('/attachments/7?open=true', $pdfData['src']);
+
+        $docAttachment = Attachment::factory()->make([
+            'extension' => 'docx',
+            'external' => false,
+        ]);
+        $docAttachment->id = 9;
+
+        $docData = $docAttachment->getPreviewFrameData();
+        $this->assertNotNull($docData);
+        $this->assertSame('office', $docData['type']);
+        $this->assertStringContainsString('view.officeapps.live.com', $docData['src']);
+        $this->assertStringContainsString(rawurlencode($docAttachment->getUrl()), $docData['src']);
+    }
+
+    public function test_preview_frame_data_returns_null_when_not_available()
+    {
+        $unsupportedAttachment = Attachment::factory()->make([
+            'extension' => 'txt',
+            'external' => false,
+        ]);
+        $this->assertNull($unsupportedAttachment->getPreviewFrameData());
+
+        $externalAttachment = Attachment::factory()->make([
+            'extension' => 'pdf',
+            'external' => true,
+        ]);
+        $this->assertNull($externalAttachment->getPreviewFrameData());
+    }
 }

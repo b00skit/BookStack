@@ -101,9 +101,7 @@ class Attachment extends Model implements OwnableInterface
             return false;
         }
 
-        $previewExtensions = ['pdf', 'doc', 'docx', 'xls', 'xlsx'];
-
-        return in_array(strtolower($this->extension), $previewExtensions);
+        return strtolower($this->extension) === 'pdf';
     }
 
     /**
@@ -116,6 +114,34 @@ class Attachment extends Model implements OwnableInterface
             . '</div>';
 
         return ['text/html' => $html, 'text/plain' => $html];
+    }
+
+    /**
+     * Get data required to render a preview frame for this attachment.
+     * Returns null if the file type cannot be previewed in the UI.
+     */
+    public function getPreviewFrameData(): ?array
+    {
+        if ($this->external) {
+            return null;
+        }
+
+        $extension = strtolower($this->extension);
+        if ($extension === 'pdf') {
+            return [
+                'type' => 'pdf',
+                'src' => $this->getUrl(true),
+            ];
+        }
+
+        if (in_array($extension, ['doc', 'docx', 'xls', 'xlsx'])) {
+            return [
+                'type' => 'office',
+                'src' => 'https://view.officeapps.live.com/op/embed.aspx?src=' . rawurlencode($this->getUrl()),
+            ];
+        }
+
+        return null;
     }
 
     /**
