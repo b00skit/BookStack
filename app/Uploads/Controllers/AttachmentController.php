@@ -9,6 +9,7 @@ use BookStack\Exceptions\NotFoundException;
 use BookStack\Http\Controller;
 use BookStack\Permissions\Permission;
 use BookStack\Uploads\Attachment;
+use BookStack\Uploads\AttachmentPreviewService;
 use BookStack\Uploads\AttachmentService;
 use Exception;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
@@ -21,7 +22,8 @@ class AttachmentController extends Controller
     public function __construct(
         protected AttachmentService $attachmentService,
         protected PageQueries $pageQueries,
-        protected PageRepo $pageRepo
+        protected PageRepo $pageRepo,
+        protected AttachmentPreviewService $attachmentPreviewService
     ) {
     }
 
@@ -235,6 +237,29 @@ class AttachmentController extends Controller
         }
 
         return $this->download()->streamedDirectly($attachmentStream, $fileName, $attachmentSize);
+    }
+
+    /**
+     * Stream a processed preview of an attachment.
+     */
+    public function preview(Request $request, string $attachmentId)
+    {
+        /** @var Attachment $attachment */
+        $attachment = Attachment::query()->findOrFail($attachmentId);
+
+        try {
+            $page = $this->pageQueries->findVisibleByIdOrFail($attachment->uploaded_to);
+        } catch (NotFoundException $exception) {
+            throw new NotFoundException(trans('errors.attachment_not_found'));
+        }
+
+        $this->checkOwnablePermission(Permission::PageView, $page);
+
+        if (!$attachment->isPreviewableFile() || $attachment->getPreviewDisplayType() === 'pdf') {
+            throw new NotFoundException();
+        }
+
+        return $this->attachmentPreviewService->stream($attachment);
     }
 
     /**

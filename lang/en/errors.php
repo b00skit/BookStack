@@ -59,6 +59,7 @@ return [
     // Attachments
     'attachment_not_found' => 'Attachment not found',
     'attachment_upload_error' => 'An error occurred uploading the attachment file',
+    'attachment_preview_failed' => 'Unable to generate a preview for this attachment.',
 
     // Pages
     'page_draft_autosave_fail' => 'Failed to save draft. Ensure you have internet connection before saving this page',
@@ -102,6 +103,7 @@ return [
     'image_not_found_details' => 'If you expected this image to exist it might have been deleted.',
     'return_home' => 'Return to home',
     'error_occurred' => 'An Error Occurred',
+    'error' => 'Error',
     'app_down' => ':appName is down right now',
     'back_soon' => 'It will be back up soon.',
 

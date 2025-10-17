@@ -30,6 +30,8 @@
         "league/html-to-markdown": "^5.0.0",
         "league/oauth2-client": "^2.6",
         "onelogin/php-saml": "^4.0",
+        "phpoffice/phpspreadsheet": "^2.1",
+        "phpoffice/phpword": "^1.2",
         "phpseclib/phpseclib": "^3.0",
         "pragmarx/google2fa": "^8.0",
         "predis/predis": "^3.2",

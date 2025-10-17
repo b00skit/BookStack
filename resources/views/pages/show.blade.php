@@ -44,10 +44,42 @@
     @endif
 
     @if ($page->attachments->count() > 0)
+        @php
+            $previewableAttachments = $page->attachments->filter(fn($attachment) => $attachment->isPreviewableFile());
+        @endphp
         <div id="page-attachments" class="mb-l">
-            <h5>{{ trans('entities.pages_attachments') }}</h5>
-            <div class="body">
-                @include('attachments.list', ['attachments' => $page->attachments])
+            <div component="tabs" class="tab-container bordered" option:tabs:active-under="720">
+                <div role="tablist">
+                    <button type="button"
+                            role="tab"
+                            id="page-attachments-tab-list"
+                            aria-selected="true"
+                            aria-controls="page-attachments-panel-list">{{ trans('entities.pages_attachments') }}</button>
+                    <button type="button"
+                            role="tab"
+                            id="page-attachments-tab-preview"
+                            aria-selected="false"
+                            aria-controls="page-attachments-panel-preview">{{ trans('entities.pages_file_previews') }}</button>
+                </div>
+                <section id="page-attachments-panel-list"
+                         role="tabpanel"
+                         tabindex="0"
+                         aria-labelledby="page-attachments-tab-list"
+                         class="body">
+                    @include('attachments.list', ['attachments' => $page->attachments])
+                </section>
+                <section id="page-attachments-panel-preview"
+                         role="tabpanel"
+                         tabindex="0"
+                         aria-labelledby="page-attachments-tab-preview"
+                         class="body"
+                         hidden>
+                    @if($previewableAttachments->isNotEmpty())
+                        @include('attachments.previews', ['attachments' => $previewableAttachments])
+                    @else
+                        <p class="text-muted small">{{ trans('entities.attachments_file_previews_empty') }}</p>
+                    @endif
+                </section>
             </div>
         </div>
     @endif

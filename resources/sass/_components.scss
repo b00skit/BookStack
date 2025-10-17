@@ -573,6 +573,72 @@ body.flexbox-support #entity-selector-wrap .popup-body .form-group {
   outline: none;
 }
 
+.attachment-previewer {
+  display: flex;
+  flex-direction: column;
+  gap: vars.$m;
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: vars.$xs;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: vars.$s;
+    padding: vars.$xs vars.$s;
+    border-radius: 4px;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    border: 1px solid transparent;
+    background: transparent;
+    @include mixins.lightDark(color, inherit, inherit);
+
+    &:hover,
+    &:focus {
+      @include mixins.lightDark(background-color, rgba(0, 0, 0, 0.04), rgba(255, 255, 255, 0.08));
+      outline: none;
+    }
+
+    &.is-active {
+      border-color: var(--color-link);
+      @include mixins.lightDark(background-color, rgba(32, 110, 167, 0.12), rgba(32, 110, 167, 0.3));
+    }
+  }
+
+  &__viewer {
+    position: relative;
+    min-height: 320px;
+  }
+
+  &__frame {
+    width: 100%;
+    min-height: 320px;
+    border: 1px solid;
+    border-radius: 4px;
+    @include mixins.lightDark(border-color, #DDD, #444);
+    @include mixins.lightDark(background-color, #FFF, #111);
+  }
+
+  &__message {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: vars.$m;
+    border: 1px dashed;
+    border-radius: 4px;
+    @include mixins.lightDark(border-color, #DDD, #444);
+    @include mixins.lightDark(color, rgba(0, 0, 0, 0.7), rgba(255, 255, 255, 0.7));
+    background: transparent;
+  }
+}
+
 .image-picker .none {
   display: none;
 }
